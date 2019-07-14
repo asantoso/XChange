@@ -9,7 +9,7 @@
 
     <groupId>org.knowm.xchange</groupId>
     <artifactId>xchange-parent</artifactId>
-    <version>4.3.21-SNAPSHOT</version>
+    <version>4.3.21-VERTX</version>
     <packaging>pom</packaging>
 
     <name>XChange</name>
@@ -211,8 +211,8 @@
             <!-- Rest client -->
             <dependency>
                 <groupId>com.github.mmazi</groupId>
-                <artifactId>rescu</artifactId>
-                <version>${version.github.mmazi}</version>
+                <artifactId>rescu-vertx</artifactId>
+                <version>1.0.0</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-codec</groupId>
@@ -225,6 +225,20 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${version.commons.io}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/io.vertx/vertx-core -->
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-core</artifactId>
+                <version>3.7.1</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/io.vertx/vertx-web -->
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-web</artifactId>
+                <version>3.7.1</version>
             </dependency>
 
             <!--For String Joining, etc. -->
