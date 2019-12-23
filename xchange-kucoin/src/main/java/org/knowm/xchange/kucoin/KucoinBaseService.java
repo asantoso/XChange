@@ -1,8 +1,6 @@
 package org.knowm.xchange.kucoin;
 
 import com.google.common.base.Strings;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientOptions;
 import org.knowm.xchange.kucoin.service.AccountAPI;
 import org.knowm.xchange.kucoin.service.DepositAPI;
 import org.knowm.xchange.kucoin.service.FillAPI;
@@ -15,8 +13,6 @@ import org.knowm.xchange.kucoin.service.SymbolAPI;
 import org.knowm.xchange.kucoin.service.WithdrawalAPI;
 import org.knowm.xchange.service.BaseExchangeService;
 import org.knowm.xchange.service.BaseService;
-import si.mazi.rescu.ClientConfig;
-import si.mazi.rescu.RestInvocationHandler;
 import si.mazi.rescu.RestProxyFactory;
 import si.mazi.rescu.SynchronizedValueFactory;
 
@@ -35,24 +31,6 @@ public class KucoinBaseService extends BaseExchangeService<KucoinExchange> imple
   protected String apiKey;
   protected String passphrase;
   protected SynchronizedValueFactory<Long> nonceFactory;
-
-  RestInvocationHandler apiHandler;
-
-  public RestInvocationHandler getInvokeHandler() {
-    return this.apiHandler;
-  }
-
-  public void setHttpClient(HttpClient client, HttpClientOptions options) {
-    getInvokeHandler().setHttpClient(client, options);
-  }
-
-  public void setHttpClientOptions(HttpClientOptions options) {
-    getInvokeHandler().setHttpClientOptions(options);
-  }
-
-  public HttpClientOptions getHttpClientOptions() {
-    return getInvokeHandler().getHttpClientOptions();
-  }
 
   protected KucoinBaseService(KucoinExchange exchange) {
     super(exchange);
@@ -74,13 +52,8 @@ public class KucoinBaseService extends BaseExchangeService<KucoinExchange> imple
   }
 
   private <T> T service(KucoinExchange exchange, Class<T> clazz) {
-    //    return RestProxyFactory.createProxy(
-    //        clazz, exchange.getExchangeSpecification().getSslUri(), );
-
-    ClientConfig config = getClientConfig();
-    String uri = exchange.getExchangeSpecification().getSslUri();
-    RestInvocationHandler apiHandler = new RestInvocationHandler(clazz, uri, config);
-    return RestProxyFactory.createProxy(clazz, uri, getClientConfig(), apiHandler);
+    return RestProxyFactory.createProxy(
+        clazz, exchange.getExchangeSpecification().getSslUri(), getClientConfig());
   }
 
   protected void checkAuthenticated() {

@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.dto.account.AccountInfo;
 import org.knowm.xchange.dto.account.Balance;
@@ -40,9 +41,27 @@ public class OkexAccountService extends OkexAccountServiceRaw implements Account
     List<OkexSpotAccountRecord> spotTradingAccount = super.spotTradingAccount();
     Collection<Balance> tradingBalances =
         spotTradingAccount.stream().map(OkexAdaptersV3::convert).collect(Collectors.toList());
+
+    /*
+     * commented out, since using this method we are running into [30014] Too Many Requests
+    FuturesAccountsResponse futuresAccounts = super.getFuturesAccounts();
+    Collection<Balance> futuresBalances =
+        futuresAccounts.getInfo().getAccounts().entrySet().stream()
+            .map(e -> OkexAdaptersV3.convert(e.getKey(), e.getValue()))
+            .collect(Collectors.toList());
+
+    List<SwapAccountInfo> swapAccounts = super.getSwapAccounts();
+    Collection<Balance> swapBalances =
+        swapAccounts.stream().map(OkexAdaptersV3::convert).collect(Collectors.toList());*/
     return new AccountInfo(
-        new Wallet("Funding Account", "Funding Account", fundingBalances),
-        new Wallet("Trading Account", "Trading Account", tradingBalances));
+        Wallet.Builder.from(fundingBalances)
+            .id("Funding")
+            .features(Stream.of(Wallet.WalletFeature.FUNDING).collect(Collectors.toSet()))
+            .build(),
+        Wallet.Builder.from(tradingBalances)
+            .id("Trading")
+            .features(Stream.of(Wallet.WalletFeature.TRADING).collect(Collectors.toSet()))
+            .build());
   }
 
   @Override
